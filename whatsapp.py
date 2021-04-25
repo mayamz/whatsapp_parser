@@ -105,6 +105,24 @@ def count_emoji(df):
 def count_questions(df, regex=True):
     return df[df["text"].str.contains(r"\?+")].groupby("author").count()
 
+def counter_by_user(df):
+    ''' all the counters in one df
+        currently: messages, words, hhh, emoji, questions
+        all by authors
+        '''
+    counter = pd.DataFrame()
+    counter["messages"] = df.groupby("author").count().iloc[:,1]
+    counter["words"] = None
+    for author in Message.authors:
+        authors_words = " ".join(df[df['author'] == author]["text"]).split()  # Filter here if you want to remove "yes" and whatever
+        counter.loc[author,"words"] = len(authors_words)
+
+    counter["hhh"] = count_haha(df).iloc[:,1]
+    counter["emoji"] = count_emoji(df).iloc[:,1]
+    counter["questions"] = count_questions(df).iloc[:,1]
+    counter = counter.transpose()
+
+    return counter
 
 def clean_text(text):
     weirdPatterns = re.compile("["
@@ -146,18 +164,6 @@ def main(path,name):
     df = pd.DataFrame(chattext)
     df.head()
 
-    by_author = df.groupby("author").count()
-    print("messages by author")
-    print(by_author.iloc[:,1])
-
-    print ("\n####################\n")
-
-    print ("words by author")
-    for author in Message.authors:
-        authors_words = " ".join(df[df['author'] == author]["text"]).split()  # Filter here if you want to remove "yes" and whatever
-        print(author+":",len(authors_words))
-
-    print ("\n####################\n")
 
     """
     print ("how many attachments")
@@ -167,32 +173,13 @@ def main(path,name):
     print("\n####################\n")
     """
 
-    print ("how many hi")
-    with_word = count_word(df, "היי")
-    print(with_word.iloc[:,0])
-
-
-    print("\n####################\n")
-
-    print ("how many hhhh")
-    with_hhh = count_haha(df)
-    print(with_hhh.iloc[:,0])
+    counter = counter_by_user(df)
+    print ("counters by authors")
+    print (counter)
 
     print("\n####################\n")
 
-    print ("emoji count")
-    emoji_count = count_emoji(df)
-    print(emoji_count.iloc[:,1])
-
-    print("\n####################\n")
-
-    print ("questions count")
-    questions_count = count_questions(df)
-    print(questions_count.iloc[:,1])
-
-    print("\n####################\n")
-
-    print ("words by author")
+    print ("most common words by author")
     for author in Message.authors:
         authors_words = " ".join(df[df['author'] == author]["text"]).split()  # Filter here if you want to remove "yes" and whatever
         most_used_words = Counter(authors_words).most_common(5)
