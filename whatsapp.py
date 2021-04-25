@@ -102,6 +102,10 @@ def count_haha(df, regex=True):
 def count_emoji(df):
     return df[df["text"].str.contains(EMOJI_REGEX)].groupby("author").count()
 
+def count_questions(df, regex=True):
+    return df[df["text"].str.contains(r"\?+")].groupby("author").count()
+
+
 def clean_text(text):
     weirdPatterns = re.compile("["
                               u"\U0001F600-\U0001F64F"  # emoticons
@@ -179,6 +183,12 @@ def main(path,name):
     print ("emoji count")
     emoji_count = count_emoji(df)
     print(emoji_count.iloc[:,1])
+
+    print("\n####################\n")
+
+    print ("questions count")
+    questions_count = count_questions(df)
+    print(questions_count.iloc[:,1])
 
     print("\n####################\n")
 
