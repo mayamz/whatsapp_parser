@@ -109,12 +109,14 @@ def count_curses(df):
     counter = pd.DataFrame()
     curse_list = ["פאק", "שיט", "סעמק", "זונה", "דמט", "דאם", "דאמ", "לעזאזל", "זין", "רבאק"]
     for curse in curse_list:
+        curse_row = pd.DataFrame()
         # generate the regex that allows letter repetitions
         curse_regex = ""
         for letter in curse:
             curse_regex = curse_regex+letter+"+"
 
-        counter[curse] = count_word(df,curse_regex).iloc[:,1]
+        curse_row[curse] = count_word(df,curse_regex).iloc[:,1]
+        counter = pd.concat([counter,curse_row],axis=1)
     counter["total"] = counter.sum(axis=1)
     counter = counter.fillna(0)
     counter = counter.transpose()
