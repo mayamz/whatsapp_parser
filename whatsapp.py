@@ -187,6 +187,9 @@ def main(path,name):
     df = pd.DataFrame(chattext)
     df.head()
 
+    # drop "Media omitted"
+    df = df[df["text"]!="<Media omitted>"]
+
 
     """
     print ("how many attachments")
