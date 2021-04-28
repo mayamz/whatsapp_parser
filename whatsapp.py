@@ -107,7 +107,7 @@ def count_questions(df, regex=True):
 
 def count_curses(df):
     counter = pd.DataFrame()
-    curse_list = ["פאק", "שיט", "סעמק", "זונה", "דמט", "דאם", "דאמ", "לעזאזל", "זין"]
+    curse_list = ["פאק", "שיט", "סעמק", "זונה", "דמט", "דאם", "דאמ", "לעזאזל", "זין", "רבאק"]
     for curse in curse_list:
         # generate the regex that allows letter repetitions
         curse_regex = ""
@@ -147,6 +147,11 @@ def clean_text(text):
     clean_text = weirdPatterns.sub(r'', text)
     return (clean_text)
 
+def remove_punctuation(df):
+    punctuations = re.compile('[!"#$%&\'()*+\-./:;<=>?\[\]^_`{|}~]')
+    df["text"] = df["text"].replace(punctuations,"",regex=True)
+    return df
+
 def main(path,name):
     with open(path+name+".txt", encoding="utf-8") as f:
         contents = f.read()
@@ -171,6 +176,12 @@ def main(path,name):
         authors_words = " ".join(df[df['author'] == author]["text"]).split()  # Filter here if you want to remove "yes" and whatever
         print(author+":",len(authors_words))
 
+    print("\n####################\n")
+
+    print ("questions count")
+    questions_count = count_questions(df)
+    print(questions_count.iloc[:,1])
+
     print ("\n####################\n")
 
     """
@@ -180,6 +191,7 @@ def main(path,name):
 
     print("\n####################\n")
     """
+    df = remove_punctuation(df)
 
     print ("how many hi")
     with_word = count_word(df, "היי")
@@ -198,11 +210,7 @@ def main(path,name):
     emoji_count = count_emoji(df)
     print(emoji_count.iloc[:,1])
 
-    print("\n####################\n")
 
-    print ("questions count")
-    questions_count = count_questions(df)
-    print(questions_count.iloc[:,1])
 
     print("\n####################\n")
 
