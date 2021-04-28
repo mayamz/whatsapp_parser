@@ -167,6 +167,9 @@ def main(path,name):
     df = pd.DataFrame(chattext)
     df.head()
 
+    # drop "Media omitted"
+    df = df[df["text"]!="<Media omitted>"]
+
     by_author = df.groupby("author").count()
     print("messages by author")
     print(by_author.iloc[:,1])
