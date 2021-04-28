@@ -120,6 +120,7 @@ def counter_by_user(df):
     counter["hhh"] = count_haha(df).iloc[:,1]
     counter["emoji"] = count_emoji(df).iloc[:,1]
     counter["questions"] = count_questions(df).iloc[:,1]
+    counter["keilu"] = count_word(df,"כאילו").iloc[:,1]
     counter = counter.transpose()
 
     return counter
