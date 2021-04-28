@@ -105,6 +105,21 @@ def count_emoji(df):
 def count_questions(df, regex=True):
     return df[df["text"].str.contains(r"\?+")].groupby("author").count()
 
+def count_curses(df):
+    counter = pd.DataFrame()
+    curse_list = ["פאק", "שיט", "סעמק", "זונה", "דמט", "דאם", "דאמ", "לעזאזל", "זין"]
+    for curse in curse_list:
+        # generate the regex that allows letter repetitions
+        curse_regex = ""
+        for letter in curse:
+            curse_regex = curse_regex+letter+"+"
+
+        counter[curse] = count_word(df,curse_regex).iloc[:,1]
+    counter["total"] = counter.sum(axis=1)
+    counter = counter.fillna(0)
+    counter = counter.transpose()
+    return counter
+
 def counter_by_user(df):
     ''' all the counters in one df
         currently: messages, words, hhh, emoji, questions
@@ -177,6 +192,12 @@ def main(path,name):
     counter = counter_by_user(df)
     print ("counters by authors")
     print (counter)
+
+    print("\n####################\n")
+
+    print("curses count")
+    curses_counter = count_curses(df)
+    print(curses_counter) # this part works better in notebook, because of the hebrew
 
     print("\n####################\n")
 
