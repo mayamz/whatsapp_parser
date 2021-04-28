@@ -120,26 +120,6 @@ def count_curses(df):
     counter = counter.transpose()
     return counter
 
-def counter_by_user(df):
-    ''' all the counters in one df
-        currently: messages, words, hhh, emoji, questions
-        all by authors
-        '''
-    counter = pd.DataFrame()
-    counter["messages"] = df.groupby("author").count().iloc[:,1]
-    counter["words"] = None
-    for author in Message.authors:
-        authors_words = " ".join(df[df['author'] == author]["text"]).split()  # Filter here if you want to remove "yes" and whatever
-        counter.loc[author,"words"] = len(authors_words)
-
-    counter["hhh"] = count_haha(df).iloc[:,1]
-    counter["emoji"] = count_emoji(df).iloc[:,1]
-    counter["questions"] = count_questions(df).iloc[:,1]
-    counter["keilu"] = count_word(df,"כאילו").iloc[:,1]
-    counter = counter.transpose()
-
-    return counter
-
 def clean_text(text):
     weirdPatterns = re.compile("["
                               u"\U0001F600-\U0001F64F"  # emoticons
@@ -194,6 +174,7 @@ def main(path,name):
     print (counter)
 
     print("\n####################\n")
+    df = remove_punctuation(df)
 
     print("curses count")
     curses_counter = count_curses(df)
@@ -213,7 +194,6 @@ def main(path,name):
     print ("\n####################\n")
     s = input("are you ready for some graphs?")
 
-    by_author = df.groupby("author").count()
     by_author.plot.barh()
     plt.title("messages by author")
     plt.show()
