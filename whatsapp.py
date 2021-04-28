@@ -107,7 +107,7 @@ def count_questions(df, regex=True):
 
 def count_curses(df):
     counter = pd.DataFrame()
-    curse_list = ["פאק", "שיט", "סעמק", "זונה", "דמט", "דאם", "דאמ", "לעזאזל", "זין", "רבאק"]
+    curse_list = ["פאק","פאקינג", "שיט", "סעמק","כוסאמק", "זונה", "דמט", "דאם", "דאמ", "לעזאזל", "זין", "רבאק"]
     for curse in curse_list:
         curse_row = pd.DataFrame()
         # generate the regex that allows letter repetitions
@@ -122,13 +122,14 @@ def count_curses(df):
     counter = counter.transpose()
     return counter
 
-def counter_by_user(df):
+def counter_by_user(df,media_df):
     ''' all the counters in one df
         currently: messages, words, hhh, emoji, questions
         all by authors
         '''
     counter = pd.DataFrame()
     counter["messages"] = df.groupby("author").count().iloc[:,1]
+    counter["media"] = media_df.groupby("author").count().iloc[:,1]
     counter["words"] = None
     for author in Message.authors:
         authors_words = " ".join(df[df['author'] == author]["text"]).split()  # Filter here if you want to remove "yes" and whatever
@@ -188,18 +189,13 @@ def main(path,name):
     df.head()
 
     # drop "Media omitted"
+    media_df = df[df["text"]=="<Media omitted>"]
     df = df[df["text"]!="<Media omitted>"]
 
 
-    """
-    print ("how many attachments")
-    attachment_counts = df.groupby(["author", "attachment"]).count()
-    print(attachment_counts)
-
     print("\n####################\n")
-    """
 
-    counter = counter_by_user(df)
+    counter = counter_by_user(df,media_df)
     print ("counters by authors")
     print (counter)
 
