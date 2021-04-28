@@ -168,6 +168,7 @@ def main(path,name):
     df.head()
 
     # drop "Media omitted"
+    media_df = df[df["text"]=="<Media omitted>"]
     df = df[df["text"]!="<Media omitted>"]
 
     by_author = df.groupby("author").count()
@@ -189,13 +190,13 @@ def main(path,name):
 
     print ("\n####################\n")
 
-    """
-    print ("how many attachments")
-    attachment_counts = df.groupby(["author", "attachment"]).count()
-    print(attachment_counts)
+
+    print ("media by author")
+    attachment_counts = media_df.groupby("author").count()
+    print(attachment_counts.iloc[:,1])
 
     print("\n####################\n")
-    """
+
     df = remove_punctuation(df)
 
     print ("how many hi")
