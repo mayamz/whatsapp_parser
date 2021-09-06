@@ -40,9 +40,12 @@ def count_curses(df):
 
         curse_row[curse] = count_word(df, curse_regex).iloc[:, 1]
         counter = pd.concat([counter, curse_row], axis=1)
-    counter["total"] = counter.sum(axis=1)
+    counter["total"] = counter.sum(axis=1) # total per author
     counter = counter.fillna(0)
     counter = counter.transpose()
+    counter["total"] = counter.sum(axis=1) # total per curse
+    counter = counter.astype(int)
+
     return counter
 
 
@@ -66,5 +69,7 @@ def counter_by_user(df, media_df):
     counter["questions"] = count_questions(df).iloc[:, 1]
     counter["keilu"] = count_word(df, "כאילו").iloc[:, 1]
     counter = counter.transpose()
+    counter["total"] = counter.sum(axis=1)
+    counter = counter.astype(int)
 
     return counter
