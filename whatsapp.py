@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from parsing_tools import *
-from statistics_calculations import *
-
 import re
 from collections import Counter
 
@@ -13,6 +10,9 @@ import pandas as pd
 from bidi.algorithm import get_display
 # from PIL import Image
 from wordcloud import WordCloud
+
+from parsing_tools import *
+from statistics_calculations import *
 
 
 def main(path, name):
