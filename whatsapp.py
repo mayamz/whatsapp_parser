@@ -62,7 +62,8 @@ def main(path, name):
     print("\n####################\n")
     s = input("are you ready for some graphs?")
 
-    by_author.plot.barh()   # TODO - find where missing variable comes from and fix
+    by_author = df.groupby("author").count()
+    by_author.plot.barh()
     plt.title("messages by author")
     plt.show()
     df = df.iloc[:, :-1]
