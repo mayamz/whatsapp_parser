@@ -23,3 +23,5 @@ FILE_TYPES = {
     'vcf': 'contact',
 }
 TIMEZONE_SHIFT = datetime.timedelta(hours=0)  # Thanks Whatsapp
+
+HEBREW_LETTERS = "[אבגדהוזחטיכלמנסעפצקרשת]"
