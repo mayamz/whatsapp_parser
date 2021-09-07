@@ -1,8 +1,8 @@
-
+import numpy as np
 import pandas as pd
-from defaults import EMOJI_REGEX
+from defaults import EMOJI_REGEX, HEBREW_LETTERS
 from parsing_tools import Message
-
+import matplotlib.pyplot as plt
 
 def count_word(df, word, regex=True):
     """"""  # TODO - add docstring and type hints
@@ -70,6 +70,50 @@ def counter_by_user(df, media_df):
     counter["keilu"] = count_word(df, "כאילו").iloc[:, 1]
     counter = counter.transpose()
     counter["total"] = counter.sum(axis=1)
+    counter = counter.fillna(0)
     counter = counter.astype(int)
 
     return counter
+
+def plot_percentage(counter):
+    """
+    generates a horizontal bar plot of each category, and the percentage of each user in it.
+    counter is a df that contains the user columns + total column, and indexes of the categories
+    """
+
+    # reverse hebrew indexes
+    counter.index = counter.index.where(~counter.index.str.contains(HEBREW_LETTERS), counter.index.str[::-1])
+
+    # reverse hebrew columns
+    counter.columns = counter.columns.where(~counter.columns.str.contains(HEBREW_LETTERS), counter.columns.str[::-1])
+
+    # change counters to percentages
+    for col in counter.columns[:-1]:
+            counter[col] = counter[col].mask(counter["total"]!=0, counter[col] / counter["total"] * 100)
+
+    fig, ax = plt.subplots()
+    fig.set_figheight(len(counter) * 0.6)
+
+    # generates the first bar (starts with 0)
+    ax.barh(counter.index, counter.iloc[:,0], label=counter.columns[0])
+    for user in range(1, len(counter.columns)-1):
+        ax.barh(counter.index, counter.iloc[:,user], height=0.8, left=counter.iloc[:,:user].sum(axis=1), label=counter.columns[user])
+
+    for p in ax.patches:
+        txt = str(p.get_width().round(1)) + '%'
+
+        # locations for two users (two ends)
+        if len(counter.columns)==3:
+            if p.get_x() == 0:
+                txt_x = 0
+            else:
+                txt_x = 90
+        # if more - left side of bar
+        else:
+            txt_x = p.get_x()
+        txt_y = p.get_y()+0.4
+        ax.text(txt_x, txt_y, txt)
+
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    plt.xlim(0,100)
+    plt.show()

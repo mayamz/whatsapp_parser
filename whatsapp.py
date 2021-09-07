@@ -39,6 +39,7 @@ def main(path, name):
     counter = counter_by_user(df, media_df)
     print("counters by authors")
     print(counter)
+    plot_percentage(counter.copy())
 
     print("\n####################\n")
     df = remove_punctuation(df)
@@ -46,6 +47,7 @@ def main(path, name):
     print("curses count")
     curses_counter = count_curses(df)
     print(curses_counter)  # this part works better in notebook, because of the hebrew
+    plot_percentage(curses_counter.copy())
 
     print("\n####################\n")
 
