@@ -24,4 +24,4 @@ FILE_TYPES = {
 }
 TIMEZONE_SHIFT = datetime.timedelta(hours=0)  # Thanks Whatsapp
 
-HEBREW_LETTERS = "[אבגדהוזחטיכלמנסעפצקרשת]"
+HEBREW_LETTERS = "[אבגדהוזחטיכלמנסעפצקרשתךםןףץ]"
