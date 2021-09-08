@@ -13,7 +13,7 @@ from wordcloud import WordCloud
 
 from parsing_tools import *
 from statistics_calculations import *
-
+from defaults import HEBREW_LETTERS
 
 def main(path, name):
     """"""  # TODO - add docstring and type hints
@@ -39,6 +39,7 @@ def main(path, name):
     counter = counter_by_user(df, media_df)
     print("counters by authors")
     print(counter)
+    plot_percentage(counter.copy())
 
     print("\n####################\n")
     df = remove_punctuation(df)
@@ -46,6 +47,7 @@ def main(path, name):
     print("curses count")
     curses_counter = count_curses(df)
     print(curses_counter)  # this part works better in notebook, because of the hebrew
+    plot_percentage(curses_counter.copy())
 
     print("\n####################\n")
 
@@ -61,6 +63,9 @@ def main(path, name):
 
     print("\n####################\n")
     s = input("are you ready for some graphs?")
+
+    # revert hebrew authors for the graphs
+    df["author"] = df["author"].mask(df["author"].str.contains(HEBREW_LETTERS), df["author"].str[::-1])
 
     by_author = df.groupby("author")["text"].count()
     by_author.plot.barh()
@@ -97,6 +102,10 @@ def main(path, name):
     """Create and generate a word cloud image:"""
     ax.get_legend().remove()
     for author in Message.authors:
+        # revert name
+        if author[::-1] in df["author"].unique():
+            author = author[::-1]
+
         author_text = get_display(clean_text(
             " ".join(text for text in (df[df['author'] == author]["text"]))))
         wordcloud = WordCloud(
