@@ -117,3 +117,18 @@ def plot_percentage(counter):
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.xlim(0,100)
     plt.show()
+
+def plot_word(df, word, regex=True):
+    """ Counts the use of a specific word by month, and plot by user
+        Be careful, word might actually be a regex
+    """
+    by_month = df[df["text"].str.contains(r"{}($|\s)".format(word))]
+    if word[0] in HEBREW_LETTERS:
+        word = word[::-1]
+
+    by_month = by_month.groupby([pd.Grouper(freq='M', key='date'), 'author']).count()
+    fig, ax = plt.subplots(figsize=(15, 7))
+    by_month.unstack().plot(ax=ax)
+    plt.ylim(0, plt.ylim()[1])
+    plt.title(f"Use Of {word} By User")
+    plt.show()
