@@ -1,6 +1,6 @@
 import datetime
 import re
-from defaults import TIMEZONE_SHIFT, DEFAULT_FILE_TYPE, FILE_TYPES
+from defaults import *
 
 
 class Message:
@@ -36,29 +36,13 @@ class Message:
         return DEFAULT_FILE_TYPE
 
 
-def parse_android_chat(contents):
-    """"""  # TODO - add docstring and type hints
-    matches = re.findall(
-        r'^(\d{2}\/\d{2}\/\d{4}\, \d{1,2}:\d{2}) \- (.*?): (.*)$', contents,
-        re.M)
-    return [Message(datetime.datetime.strptime(match[0],
-                                               '%d/%m/%Y, %H:%M') + TIMEZONE_SHIFT,
-                    match[1],
-                    match[2])
-            for match in matches]
-
-
-def parse_apple_chat(contents):
-    """"""  # TODO - add docstring and type hints
-    matches = re.findall(
-        r'^(\d{0,2}\/\d{0,2}\/\d{2}\, \d{1,2}:\d{2}) - (.*?): (.*)$', contents,
-        re.M)
-    return [Message(datetime.datetime.strptime(match[0],
-                                               '%m/%d/%y, %H:%M') + TIMEZONE_SHIFT,
-                    match[1],
-                    match[2])
-            for match in matches]
-
+def parse_any_format(contents):
+    for format in DATE_FORMATS:
+        if re.search(format, contents, re.M):
+            matches = re.findall(format, contents, re.M)
+            return [Message(datetime.datetime.strptime(match[0], DATE_FORMATS[format]) + TIMEZONE_SHIFT,
+                            match[1], match[2]) for match in matches]
+    print("Not a known format")
 
 def format_for_pandas(chat):
     """"""  # TODO - add docstring and type hints
