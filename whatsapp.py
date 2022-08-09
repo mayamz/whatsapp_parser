@@ -27,8 +27,8 @@ def main(path, name):
     df.head()
 
     # drop "Media omitted"
-    media_df = df[df["text"] == "<Media omitted>"]
-    df = df[df["text"] != "<Media omitted>"]
+    media_df = df[(df["text"] == "<Media omitted>") | (df["text"] == "<המדיה לא נכללה>")]
+    df = df[(df["text"] != "<Media omitted>") & (df["text"] != "<המדיה לא נכללה>")]
 
     print("\n####################\n")
 
