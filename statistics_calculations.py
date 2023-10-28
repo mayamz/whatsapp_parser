@@ -122,18 +122,21 @@ def plot_word(df, word):
     """ Counts the use of a specific word by month, and plot by user.
         The word is passed in the form of regex.
     """
-    by_month = df[df["text"].str.contains(r"{}($|\s)".format(word))]
+    # Take only messages where the word was used
+    word_df = df[df["text"].str.contains(r"{}($|\s)".format(word))]
 
-    if by_month.empty():
+    if word_df.empty():
         print(f"No matches found for {word}")
         return
 
+    # Flip hebrew words to rtl
     if word[0] in HEBREW_LETTERS:
         word = word[::-1]
 
-    by_month = by_month.groupby([pd.Grouper(freq='M', key='date'), 'author']).count()
+    # Group by month
+    word_df = word_df.groupby([pd.Grouper(freq='M', key='date'), 'author']).count()
     fig, ax = plt.subplots(figsize=(15, 7))
-    by_month.unstack().plot(ax=ax)
+    word_df.unstack().plot(ax=ax)
     plt.ylim(0, plt.ylim()[1])
     plt.title(f"Use Of {word} By User")
     plt.show()
