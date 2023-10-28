@@ -124,7 +124,7 @@ def plot_word(df, word):
     """
     by_month = df[df["text"].str.contains(r"{}($|\s)".format(word))]
 
-    if not len(by_month):
+    if by_month.empty():
         print(f"No matches found for {word}")
         return
 
