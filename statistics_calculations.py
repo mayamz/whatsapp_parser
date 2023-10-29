@@ -4,14 +4,14 @@ from defaults import EMOJI_REGEX, HEBREW_LETTERS
 from parsing_tools import Message
 import matplotlib.pyplot as plt
 
-def count_word(df, word, regex=True):
+def count_word(df, word):
     """"""  # TODO - add docstring and type hints
-    """Be careful, word might actually be a regex"""
+    """ Count use of word per author. The word is passed in the form of regex."""
     return df[df["text"].str.contains(r"{}($|\s)".format(word))].groupby(
         "author").count()
 
 
-def count_haha(df, regex=True):
+def count_haha(df):
     """"""  # TODO - add docstring and type hints
     return df[df["text"].str.contains(r"ח{3,}")].groupby("author").count()
 
@@ -21,7 +21,7 @@ def count_emoji(df):
     return df[df["text"].str.contains(EMOJI_REGEX)].groupby("author").count()
 
 
-def count_questions(df, regex=True):
+def count_questions(df):
     """"""  # TODO - add docstring and type hints
     return df[df["text"].str.contains(r"\?+")].groupby("author").count()
 
@@ -116,4 +116,27 @@ def plot_percentage(counter):
 
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.xlim(0,100)
+    plt.show()
+
+def plot_word(df, word):
+    """ Counts the use of a specific word by month, and plot by user.
+        The word is passed in the form of regex.
+    """
+    # Take only messages where the word was used
+    word_df = df[df["text"].str.contains(r"{}($|\s)".format(word))]
+
+    if word_df.empty():
+        print(f"No matches found for {word}")
+        return
+
+    # Flip hebrew words to rtl
+    if word[0] in HEBREW_LETTERS:
+        word = word[::-1]
+
+    # Group by month
+    word_df = word_df.groupby([pd.Grouper(freq='M', key='date'), 'author']).count()
+    fig, ax = plt.subplots(figsize=(15, 7))
+    word_df.unstack().plot(ax=ax)
+    plt.ylim(0, plt.ylim()[1])
+    plt.title(f"Use Of {word} By User")
     plt.show()
