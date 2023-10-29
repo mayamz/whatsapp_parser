@@ -11,19 +11,14 @@ from bidi.algorithm import get_display
 # from PIL import Image
 from wordcloud import WordCloud
 
+from read_chat import *
 from parsing_tools import *
 from statistics_calculations import *
 from defaults import HEBREW_LETTERS
 
 def main(path, name):
     """"""  # TODO - add docstring and type hints
-    with open(path + name + ".txt", encoding="utf-8") as f:
-        contents = f.read()
-
-    chat = parse_any_format(contents)
-
-    chattext = format_for_pandas(chat)
-    df = pd.DataFrame(chattext)
+    df = read_chat(path, name)
     df.head()
 
     # drop "Media omitted"
@@ -138,5 +133,5 @@ def main(path, name):
 
 
 if __name__ == "__main__":
-    path = "/Users/mayam/Downloads/chats/WhatsApp Chat with "
+    path = "/Users/mayam/Downloads/chats/"
     main(path, "תומר של רינת")
