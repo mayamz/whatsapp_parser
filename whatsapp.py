@@ -20,19 +20,15 @@ def main(path, name):
     with open(path + name + ".txt", encoding="utf-8") as f:
         contents = f.read()
 
-    if re.search(r'^(\d{0,2}\/\d{0,2}\/\d{2}\, \d{1,2}:\d{2}) - (.*?): (.*)$',
-                 contents, re.M):
-        chat = parse_apple_chat(contents)
-    else:
-        chat = parse_android_chat(contents)
+    chat = parse_any_format(contents)
 
     chattext = format_for_pandas(chat)
     df = pd.DataFrame(chattext)
     df.head()
 
     # drop "Media omitted"
-    media_df = df[df["text"] == "<Media omitted>"]
-    df = df[df["text"] != "<Media omitted>"]
+    media_df = df[(df["text"] == "<Media omitted>") | (df["text"] == "<המדיה לא נכללה>")]
+    df = df[(df["text"] != "<Media omitted>") & (df["text"] != "<המדיה לא נכללה>")]
 
     print("\n####################\n")
 
