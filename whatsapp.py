@@ -16,8 +16,8 @@ from parsing_tools import *
 from statistics_calculations import *
 from defaults import HEBREW_LETTERS
 
-def main(path, name):
-    """"""  # TODO - add docstring and type hints
+def main(path: str, name: str) -> None:
+    """ main function, in charge of reading the chat, cleaning it, displaying graphs and printing some statistics """
     df = read_chat(path, name)
     df.head()
 

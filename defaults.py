@@ -1,4 +1,6 @@
 import datetime
+from typing import List, Dict, Tuple, Union, Optional, Any, Callable, Iterable, Set, TypeVar, Generic, Sequence
+import pandas as pd
 
 EMOJI_REGEX = "[{}]".format("".join([
     r"\U0001F1E0-\U0001F1FF",  # flags (iOS)

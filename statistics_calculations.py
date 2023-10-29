@@ -4,30 +4,29 @@ from defaults import EMOJI_REGEX, HEBREW_LETTERS
 from parsing_tools import Message
 import matplotlib.pyplot as plt
 
-def count_word(df, word):
-    """"""  # TODO - add docstring and type hints
+def count_word(df: pd.DataFrame, word: str) -> pd.DataFrame:
     """ Count use of word per author. The word is passed in the form of regex."""
     return df[df["text"].str.contains(r"{}($|\s)".format(word))].groupby(
         "author").count()
 
 
-def count_haha(df):
-    """"""  # TODO - add docstring and type hints
+def count_haha(df: pd.DataFrame) -> pd.DataFrame:
+    """Count how many laugh messages were sent by authors"""
     return df[df["text"].str.contains(r"ח{3,}")].groupby("author").count()
 
 
-def count_emoji(df):
-    """"""  # TODO - add docstring and type hints
+def count_emoji(df: pd.DataFrame) -> pd.DataFrame:
+    """Count how many emojis were used by each author"""
     return df[df["text"].str.contains(EMOJI_REGEX)].groupby("author").count()
 
 
-def count_questions(df):
-    """"""  # TODO - add docstring and type hints
+def count_questions(df: pd.DataFrame) -> pd.DataFrame:
+    """Count how many questions were asked by each author"""
     return df[df["text"].str.contains(r"\?+")].groupby("author").count()
 
 
-def count_curses(df):
-    """"""  # TODO - add docstring and type hints
+def count_curses(df: pd.DataFrame) -> pd.DataFrame:
+    """count how many curses of each type were used"""
     counter = pd.DataFrame()
     curse_list = ["פאק", "פאקינג", "שיט", "סעמק", "כוסאמק", "זונה", "דמט",
                   "דאם", "דאמ", "לעזאזל", "זין", "רבאק"]
@@ -49,7 +48,7 @@ def count_curses(df):
     return counter
 
 
-def counter_by_user(df, media_df):
+def counter_by_user(df: pd.DataFrame, media_df: pd.DataFrame) -> pd.DataFrame:
     """
     all the counters in one df
     currently: messages, words, hhh, emoji, questions
@@ -75,7 +74,7 @@ def counter_by_user(df, media_df):
 
     return counter
 
-def plot_percentage(counter):
+def plot_percentage(counter: pd.DataFrame) -> None:
     """
     generates a horizontal bar plot of each category, and the percentage of each user in it.
     counter is a df that contains the user columns + total column, and indexes of the categories
@@ -118,7 +117,7 @@ def plot_percentage(counter):
     plt.xlim(0,100)
     plt.show()
 
-def plot_word(df, word):
+def plot_word(df: pd.DataFrame, word: str) -> None:
     """ Counts the use of a specific word by month, and plot by user.
         The word is passed in the form of regex.
     """
