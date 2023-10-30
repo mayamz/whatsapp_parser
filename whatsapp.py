@@ -11,28 +11,19 @@ from bidi.algorithm import get_display
 # from PIL import Image
 from wordcloud import WordCloud
 
+from read_chat import *
 from parsing_tools import *
 from statistics_calculations import *
 from defaults import HEBREW_LETTERS
 
 def main(path, name):
     """"""  # TODO - add docstring and type hints
-    with open(path + name + ".txt", encoding="utf-8") as f:
-        contents = f.read()
-
-    if re.search(r'^(\d{0,2}\/\d{0,2}\/\d{2}\, \d{1,2}:\d{2}) - (.*?): (.*)$',
-                 contents, re.M):
-        chat = parse_apple_chat(contents)
-    else:
-        chat = parse_android_chat(contents)
-
-    chattext = format_for_pandas(chat)
-    df = pd.DataFrame(chattext)
+    df = read_chat(path, name)
     df.head()
 
     # drop "Media omitted"
-    media_df = df[df["text"] == "<Media omitted>"]
-    df = df[df["text"] != "<Media omitted>"]
+    media_df = df[(df["text"] == "<Media omitted>") | (df["text"] == "<המדיה לא נכללה>")]
+    df = df[(df["text"] != "<Media omitted>") & (df["text"] != "<המדיה לא נכללה>")]
 
     print("\n####################\n")
 
@@ -142,5 +133,5 @@ def main(path, name):
 
 
 if __name__ == "__main__":
-    path = "/Users/mayam/Downloads/chats/WhatsApp Chat with "
+    path = "/Users/mayam/Downloads/chats/"
     main(path, "תומר של רינת")

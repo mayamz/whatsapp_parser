@@ -25,3 +25,10 @@ FILE_TYPES = {
 TIMEZONE_SHIFT = datetime.timedelta(hours=0)  # Thanks Whatsapp
 
 HEBREW_LETTERS = "[אבגדהוזחטיכלמנסעפצקרשתךםןףץ]"
+
+ANDROID_DATES = r'(\d{2}\/\d{2}\/\d{4}\, \d{1,2}:\d{2}) \- (.*?): (.*)$'
+APPLE_DATES = r'^(\d{0,2}\/\d{0,2}\/\d{2}\, \d{1,2}:\d{2}) - (.*?): (.*)$'
+NEW_FORMAT_DATES = r'^(\d{0,2}\.\d{0,2}\.\d{4}\, \d{1,2}:\d{2}) - (.*?): (.*)$'
+DATE_FORMATS = {ANDROID_DATES: '%d/%m/%Y, %H:%M',
+                APPLE_DATES: '%m/%d/%y, %H:%M',
+                NEW_FORMAT_DATES: '%d.%m.%Y, %H:%M'}
