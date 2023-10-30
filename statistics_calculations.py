@@ -125,7 +125,7 @@ def plot_word(df, word):
     # Take only messages where the word was used
     word_df = df[df["text"].str.contains(r"{}($|\s)".format(word))]
 
-    if word_df.empty():
+    if word_df.empty:
         print(f"No matches found for {word}")
         return
 
