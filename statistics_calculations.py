@@ -13,7 +13,7 @@ def count_word(df, word, regex=True):
 
 def count_haha(df, regex=True):
     """"""  # TODO - add docstring and type hints
-    return df[df["text"].str.contains(r"ח{3,}")].groupby("author").count()
+    return df[df["text"].str.contains(r"(^|\s)ח{3,}($|\s)")].groupby("author").count()
 
 
 def count_emoji(df):
