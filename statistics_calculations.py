@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from defaults import EMOJI_REGEX, HEBREW_LETTERS
+from defaults import *
 from parsing_tools import Message
 import matplotlib.pyplot as plt
 
@@ -74,6 +74,13 @@ def counter_by_user(df: pd.DataFrame, media_df: pd.DataFrame) -> pd.DataFrame:
 
     return counter
 
+def reverse_hebrew_columns(authors: List[str]) -> Dict[str, str]:
+    """ Helper function for plots. Returns a renaming dict for the list given. Revert hebrew names and doesn't change non-hebrew names """
+    rename_dict = {}
+    for author in authors:
+        rename_dict[author] = author if author[0] not in HEBREW_LETTERS else author[::-1]
+    return rename_dict
+
 def plot_percentage(counter: pd.DataFrame) -> None:
     """
     generates a horizontal bar plot of each category, and the percentage of each user in it.
@@ -83,10 +90,10 @@ def plot_percentage(counter: pd.DataFrame) -> None:
     counter = counter[sorted(counter.drop(columns = ["total"]).columns) + ["total"]]
 
     # reverse hebrew indexes
-    counter.index = counter.index.where(~counter.index.str.contains(HEBREW_LETTERS), counter.index.str[::-1])
+    counter = counter.rename(index=reverse_hebrew_columns(counter.index))
 
     # reverse hebrew columns
-    counter.columns = counter.columns.where(~counter.columns.str.contains(HEBREW_LETTERS), counter.columns.str[::-1])
+    counter = counter.rename(columns=reverse_hebrew_columns(counter.columns))
 
     # change counters to percentages
     for col in counter.columns[:-1]:
