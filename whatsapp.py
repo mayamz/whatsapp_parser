@@ -31,6 +31,10 @@ def main(path: str, name: str) -> None:
     print("counters by authors")
     print(counter)
     plot_percentage(counter.copy())
+    print("\n####################\n")
+
+    hhh_dist = plot_hhh_distribution(df)
+    print(hhh_dist)
 
     print("\n####################\n")
     df = remove_punctuation(df)
