@@ -151,3 +151,32 @@ def plot_word(df: pd.DataFrame, word: str) -> None:
     plt.ylim(0, plt.ylim()[1])
     plt.title(f"Use Of {word} By User")
     plt.show()
+
+def plot_hhh_distribution(df: pd.DataFrame) -> pd.DataFrame:
+    """ Plot a bar graph presenting the amount of h per hhh per user"""
+    haha_regex= r"(?:^|\W)(ח+)(?:$|\W)"
+    df = df[df["text"].str.contains(haha_regex)]
+
+    haha_df = pd.DataFrame()
+
+    # Get a counter table for each author
+    for author in df["author"].unique():
+        author_df = df[df["author"]==author]["text"].str.extractall(haha_regex)
+        author_df[0] = author_df[0].apply(len)
+        author_df = author_df[0].value_counts()
+
+        author_df.name = author
+        haha_df = haha_df.merge(author_df, how="outer", left_index = True, right_index = True)
+
+    # Sort columns alphabetically
+    haha_df = haha_df.sort_index(axis=1)
+    haha_df = haha_df.fillna(0)
+
+    # Plot the histogram
+    plot_df = haha_df.rename(columns = reverse_hebrew_columns(haha_df.columns))
+    plot_df.plot.bar()
+    plt.title("Number of ח in חחח")
+    plt.xlabel("Number of ח")
+    plt.ylabel("Messages")
+
+    return haha_df
