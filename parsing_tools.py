@@ -4,10 +4,12 @@ from defaults import *
 
 
 class Message:
-    """"""  # TODO - add docstring and type hints
-    authors = set()
+    """
+    A class representing a single message in the chat.
+    """
+    authors: Set[str] = set()
 
-    def __init__(self, date, author, text):
+    def __init__(self, date: datetime.datetime, author: str, text: str):
         self.date = date
         self.author = author
         self.text = text
@@ -36,26 +38,47 @@ class Message:
         return DEFAULT_FILE_TYPE
 
 
-def parse_any_format(contents):
+def parse_any_format(contents: str) -> List[Message]:
+    """
+    Parse the chat, regardless of date format
+    Parameters
+    ----------
+    contents: str - the contents of the chat file
+
+    Raises
+    ------
+    Exception - if the format is not known
+    """
     for format in DATE_FORMATS:
         if re.search(format, contents, re.M):
             matches = re.findall(format, contents, re.M)
             return [Message(datetime.datetime.strptime(match[0], DATE_FORMATS[format]) + TIMEZONE_SHIFT,
                             match[1], match[2]) for match in matches]
-    print("Not a known format")
+    raise Exception("Not a known format")
 
-def format_for_pandas(chat):
-    """"""  # TODO - add docstring and type hints
+def format_for_pandas(chat: List[Message]) -> List[Dict[str, Any]]:
+    """
+    Format the chat for pandas DataFrame creation
+
+    Parameters
+    ----------
+    chat: List[Message] - the chat to format
+    """
     return [{
         'date': item.date,
         'author': item.author,
         'text': item.text,
-        'attachment': item.attachmentType() if item.is_attachment() else None
+        'attachment': item.attachment_type() if item.is_attachment() else None
     } for item in chat]
 
 
-def clean_text(text):
-    """"""  # TODO - add docstring and type hints
+def clean_text(text: str) -> str:
+    """
+    Remove emojis and other weird characters from text
+    Parameters
+    ----------
+    text: str - the text to clean
+    """
     weirdPatterns = re.compile("["
                                u"\U0001F600-\U0001F64F"  # emoticons
                                u"\U0001F300-\U0001F5FF"  # symbols & pictographs
@@ -83,8 +106,8 @@ def clean_text(text):
     return (clean_text)
 
 
-def remove_punctuation(df):
-    """"""  # TODO - add docstring and type hints
+def remove_punctuation(df: pd.DataFrame) -> pd.DataFrame:
+    """ Remove punctuation from text column in df"""
     punctuations = re.compile('[!"#$%&\'()*+\-./:;<=>?\[\]^_`{|}~]')
     df["text"] = df["text"].replace(punctuations, "", regex=True)
     return df

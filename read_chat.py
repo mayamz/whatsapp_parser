@@ -3,8 +3,8 @@ import pandas as pd
 
 from parsing_tools import *
 
-def read_chat(path, name):
-    """ Get path for chats dir and name of chat, reads all the files with same name and concat them """  # TODO - add type hints
+def read_chat(path: str, name: str) -> pd.DataFrame:
+    """ Get path for chats dir and name of chat, reads all the files with same name and concat them """
 
     files_name = "WhatsApp Chat with " + name
     full_chat = pd.DataFrame()
