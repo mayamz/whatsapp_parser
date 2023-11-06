@@ -79,6 +79,8 @@ def plot_percentage(counter: pd.DataFrame) -> None:
     generates a horizontal bar plot of each category, and the percentage of each user in it.
     counter is a df that contains the user columns + total column, and indexes of the categories
     """
+    # Sort columns alphabetically
+    counter = counter[sorted(counter.drop(columns = ["total"]).columns) + ["total"]]
 
     # reverse hebrew indexes
     counter.index = counter.index.where(~counter.index.str.contains(HEBREW_LETTERS), counter.index.str[::-1])
@@ -123,6 +125,9 @@ def plot_word(df: pd.DataFrame, word: str) -> None:
     """
     # Take only messages where the word was used
     word_df = df[df["text"].str.contains(r"{}($|\s)".format(word))]
+
+    # Sort columns alphabetically
+    word_df = word_df.sort_index(axis=1)
 
     if word_df.empty:
         print(f"No matches found for {word}")
